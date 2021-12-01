@@ -5,6 +5,7 @@ class publicacion {
   String informacion = "";
   String fecha = (new DateTime.now()).toString();
   List<comentario> comentarios = [];
+  int meGusta = 0;
 
   publicacion() {}
 }

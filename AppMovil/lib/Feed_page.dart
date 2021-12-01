@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'model/comentario.dart';
 import 'model/publicacion.dart';
 
-
 class FeedPage extends StatefulWidget {
   publicacion item = new publicacion();
 
   FeedPage({required publicacion itemPublicacion}) {
     item = itemPublicacion;
   }
- 
+
   @override
   _FeedPageState createState() => _FeedPageState(itemPublicacion: item);
 }
@@ -35,62 +34,75 @@ class _FeedPageState extends State<FeedPage> {
   cargaComentario() {
     List<Widget> list = [];
     for (var i = 0; i < itemPublicacion.comentarios.length; i++) {
-      list.add(new Row(children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70,
-          child: new Container(
-              margin:
-                  EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 5),
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Text.rich(TextSpan(children: <InlineSpan>[
-                WidgetSpan(
-                  child: Icon(
-                    Icons.insert_emoticon_sharp,
-                    color: Colors.grey,
-                    size: 20.0,
+      list.add(new TextButton(
+          onPressed: () {
+            itemPublicacion.comentarios.elementAt(i).meGusta =
+                !itemPublicacion.comentarios.elementAt(i).meGusta;
+            _Refresh();
+          },
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            shadowColor: Colors.black,
+          ),
+          child: new Row(children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.69,
+              child: new Container(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(3),
                   ),
-                ),
-                TextSpan(
-                  text: itemPublicacion.comentarios.elementAt(i).mensaje,
-                  style: TextStyle(
-                    fontSize: 10,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '\n\n ' + itemPublicacion.comentarios.elementAt(i).fecha,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.normal,
+                  child: Text.rich(TextSpan(children: <InlineSpan>[
+                    WidgetSpan(
+                      child: Icon(
+                        Icons.insert_emoticon_sharp,
+                        color: Colors.grey,
+                        size: 20.0,
                       ),
                     ),
-                  ],
-                ),
-              ]))),
-        )
-      ]));
+                    TextSpan(
+                      text: itemPublicacion.comentarios.elementAt(i).mensaje,
+                      style: TextStyle(fontSize: 10, color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '\n\n ' +
+                              itemPublicacion.comentarios.elementAt(i).fecha,
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                    WidgetSpan(
+                      child: Icon(
+                        Icons.favorite,
+                        color: (itemPublicacion.comentarios.elementAt(i).meGusta
+                            ? Colors.pink
+                            : Colors.grey),
+                        size: 20.0,
+                      ),
+                    )
+                  ]))),
+            )
+          ])));
     }
     return new Row(children: <Widget>[
       SizedBox(
-        width: MediaQuery.of(context).size.width * 0.10,
+        width: MediaQuery.of(context).size.width * 0.1,
       ),
       SizedBox(
-          width: MediaQuery.of(context).size.width * 0.70,
+          width: MediaQuery.of(context).size.width * 0.7,
           child: new Column(children: list)),
-      SizedBox(
-        width: 10,
-      )
     ]);
   }
 
   // ignore: unused_element
-  _FeedPageState({required publicacion itemPublicacion}): super() {
+  _FeedPageState({required publicacion itemPublicacion}) : super() {
     this.itemPublicacion = itemPublicacion;
   }
 
@@ -213,31 +225,50 @@ class _FeedPageState extends State<FeedPage> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text.rich(
-                                  TextSpan(children: <InlineSpan>[
-                                    WidgetSpan(
-                                      child: Icon(
-                                        Icons.thumb_up,
-                                        color: Colors.blue,
-                                        size: 20.0,
+                                TextButton(
+                                  onPressed: () {
+                                    itemPublicacion.meGusta = 1;
+                                    _Refresh();
+                                  },
+                                  child: Text.rich(
+                                    TextSpan(children: <InlineSpan>[
+                                      WidgetSpan(
+                                        child: Icon(
+                                          Icons.thumb_up,
+                                          color: (itemPublicacion.meGusta == 1
+                                              ? Colors.blue
+                                              : Colors.grey),
+                                          size: 20.0,
+                                        ),
                                       ),
-                                    ),
-                                  ]),
+                                    ]),
+                                  ),
                                 )
                               ]),
                         ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.05,
-                          child: Text.rich(
-                            TextSpan(children: <InlineSpan>[
-                              WidgetSpan(
-                                child: Icon(
-                                  Icons.thumb_down,
-                                  color: Colors.grey,
-                                  size: 20.0,
-                                ),
-                              ),
-                            ]),
+                          child: Column(
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    itemPublicacion.meGusta = 2;
+                                    _Refresh();
+                                  },
+                                  child: Text.rich(
+                                    TextSpan(children: <InlineSpan>[
+                                      WidgetSpan(
+                                        child: Icon(
+                                          Icons.thumb_down,
+                                          color: (itemPublicacion.meGusta == 2
+                                              ? Colors.blue
+                                              : Colors.grey),
+                                          size: 20.0,
+                                        ),
+                                      ),
+                                    ]),
+                                  ))
+                            ],
                           ),
                         ),
                       ],
