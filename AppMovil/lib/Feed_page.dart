@@ -1,11 +1,99 @@
+import 'dart:html';
 import 'package:flutter/material.dart';
+import 'model/comentario.dart';
+import 'model/publicacion.dart';
+
 
 class FeedPage extends StatefulWidget {
+  publicacion item = new publicacion();
+
+  FeedPage({required publicacion itemPublicacion}) {
+    item = itemPublicacion;
+  }
+ 
   @override
-  _FeedPageState createState() => _FeedPageState();
+  _FeedPageState createState() => _FeedPageState(itemPublicacion: item);
 }
 
 class _FeedPageState extends State<FeedPage> {
+  TextEditingController controladorComentario = TextEditingController();
+  int _counter = 0;
+  publicacion itemPublicacion = new publicacion();
+
+  @override
+  void initState() {
+    super.initState();
+    controladorComentario.addListener(() {});
+  }
+
+  void _Refresh() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  cargaComentario() {
+    List<Widget> list = [];
+    for (var i = 0; i < itemPublicacion.comentarios.length; i++) {
+      list.add(new Row(children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.70,
+          child: new Container(
+              margin:
+                  EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10, right: 5),
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Text.rich(TextSpan(children: <InlineSpan>[
+                WidgetSpan(
+                  child: Icon(
+                    Icons.insert_emoticon_sharp,
+                    color: Colors.grey,
+                    size: 20.0,
+                  ),
+                ),
+                TextSpan(
+                  text: itemPublicacion.comentarios.elementAt(i).mensaje,
+                  style: TextStyle(
+                    fontSize: 10,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '\n\n ' + itemPublicacion.comentarios.elementAt(i).fecha,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ]))),
+        )
+      ]));
+    }
+    return new Row(children: <Widget>[
+      SizedBox(
+        width: MediaQuery.of(context).size.width * 0.10,
+      ),
+      SizedBox(
+          width: MediaQuery.of(context).size.width * 0.70,
+          child: new Column(children: list)),
+      SizedBox(
+        width: 10,
+      )
+    ]);
+  }
+
+  // ignore: unused_element
+  _FeedPageState({required publicacion itemPublicacion}): super() {
+    this.itemPublicacion = itemPublicacion;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +190,7 @@ class _FeedPageState extends State<FeedPage> {
                             width: MediaQuery.of(context).size.width * 0.60,
                             child: Text.rich(TextSpan(children: <InlineSpan>[
                               TextSpan(
-                                text: 'Patricia Martinez Rodriguez',
+                                text: itemPublicacion.usuario,
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -110,7 +198,7 @@ class _FeedPageState extends State<FeedPage> {
                                 children: <TextSpan>[
                                   TextSpan(
                                     //"${comment.data()['comment']}"
-                                    text: '\n Noviembre 20 de 2021, 8:33a.m.',
+                                    text: '\n ' + itemPublicacion.fecha,
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.normal,
@@ -167,12 +255,11 @@ class _FeedPageState extends State<FeedPage> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.70,
                           //height: 100,
-                          child: Card(
-                              elevation: 2,
+                          child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Text.rich(TextSpan(children: <InlineSpan>[
                                 TextSpan(
-                                  text:
-                                      "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.",
+                                  text: itemPublicacion.informacion,
                                   style: TextStyle(
                                     fontSize: 10,
                                   ),
@@ -185,51 +272,64 @@ class _FeedPageState extends State<FeedPage> {
                       ],
                     ),
                     SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
                       height: 2,
                     ),
+                    cargaComentario(),
                     Row(
                       //mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.10,
                           //foregroundImage: NetworkImage("enterImageUrl"),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.70,
+                          width: MediaQuery.of(context).size.width * 0.60,
                           //height: 100,
-                          child: Card(
-                              color: Colors.grey.shade300,
-                              child: Text.rich(TextSpan(children: <InlineSpan>[
-                                TextSpan(
-                                  text:
-                                      "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. ",
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      //"${comment.data()['comment']}"
-                                      text:
-                                          '\n Noviembre 21 de 2021, 06:35a.m.',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                WidgetSpan(
-                                  child: Icon(
-                                    Icons.favorite,
-                                    color: Colors.pink,
-                                    size: 20.0,
-                                  ),
-                                ),
-                              ]))),
+                          child: Container(
+                            //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            width: MediaQuery.of(context).size.width * 0.50,
+                            height: 70,
+                            child: TextField(
+                              onSubmitted: (value) {},
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                labelText: 'Nuevo comentario',
+                                border: OutlineInputBorder(),
+                              ),
+                              controller: controladorComentario,
+                            ),
+                          ),
                         ),
                         SizedBox(
-                          width: 10,
-                        ),
+                          width: MediaQuery.of(context).size.width * 0.1,
+                          child: Container(
+                            height: 35,
+                            width: MediaQuery.of(context).size.width * 0.1,
+                            decoration: BoxDecoration(
+                                color: Colors.red.shade900,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: TextButton(
+                              onPressed: () {
+                                var item = new comentario();
+                                item.mensaje = controladorComentario.text;
+                                itemPublicacion.comentarios.add(item);
+                                _Refresh();
+                                controladorComentario.text = "";
+                              },
+                              child: Text(
+                                '+',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ],
