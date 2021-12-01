@@ -34,6 +34,7 @@ class _FeedPageState extends State<FeedPage> {
   cargaComentario() {
     List<Widget> list = [];
     for (var i = 0; i < itemPublicacion.comentarios.length; i++) {
+      list.add(new SizedBox(height: 10,));
       list.add(new TextButton(
           onPressed: () {
             itemPublicacion.comentarios.elementAt(i).meGusta =
