@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'HomePage.dart';
+import 'controllers/autenticar_controller.dart';
 import 'registrarse.dart';
+import 'package:loggy/loggy.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +25,21 @@ class Login extends StatefulWidget {
 }
 
 class _LoginDemoState extends State<Login> {
+  final EmailCtrl = TextEditingController();
+  final ClaveCtrl = TextEditingController();
+
+  AutenticarController authCtrl = AutenticarController();
+
+  _autenticar(correo, password) async {
+    logInfo('Autenticacion de $correo $password');
+    try {
+      await authCtrl.login(correo, password);
+      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+    } catch (err) {
+      logInfo(err.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,6 +71,7 @@ class _LoginDemoState extends State<Login> {
               width: MediaQuery.of(context).size.width * 0.50,
               height: 35,
               child: TextField(
+                controller: EmailCtrl,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Correo electrónico',
@@ -70,6 +88,7 @@ class _LoginDemoState extends State<Login> {
               height: 35,
               child: TextField(
                 obscureText: true,
+                controller: ClaveCtrl,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Clave:',
@@ -86,9 +105,8 @@ class _LoginDemoState extends State<Login> {
                   color: Colors.red.shade900,
                   borderRadius: BorderRadius.circular(15)),
               child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => HomePage()));
+                onPressed: () async {
+                  await _autenticar(EmailCtrl.text, ClaveCtrl.text);
                 },
                 child: Text(
                   'Ingresar al Sistema',
