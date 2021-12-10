@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:animio/controllers/autenticar_controller.dart';
+import 'package:get/get.dart';
+
+import 'AutenticarPage.dart';
 
 class Registro extends StatefulWidget {
   @override
@@ -6,8 +10,82 @@ class Registro extends StatefulWidget {
 }
 
 class _RegistroState extends State<Registro> {
+  final EmailCtrl = TextEditingController();
+  final ClaveCtrl = TextEditingController();
+  final RepClaveCtrl = TextEditingController();
+
+  guardarUsuario(BuildContext context) async {
+    List<String> errores = [];
+    if (EmailCtrl.text.isEmpty) {
+      errores.add("Debe ingresar un usuario");
+    }
+    if (ClaveCtrl.text.isEmpty) {
+      errores.add("Debe ingresar la clave");
+    }
+    if (RepClaveCtrl.text.isEmpty) {
+      errores.add("Debe ingresar la repetición de la clave");
+    }
+    if (ClaveCtrl.text.isNotEmpty && RepClaveCtrl.text.isNotEmpty) {
+      // ignore: unrelated_type_equality_checks
+      if (RepClaveCtrl.text != ClaveCtrl.text) {
+        errores.add("Las contraseñas no son las mismas.");
+      }
+    }
+    if (errores.length == 0) {
+      AutenticarController authCtrl = AutenticarController();
+      try {
+        await authCtrl.signUp(EmailCtrl.text, ClaveCtrl.text);
+        EmailCtrl.text = "@";
+        ClaveCtrl.text = "";
+        RepClaveCtrl.text = "";
+        // set up the button
+        Widget okButton = TextButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+        );
+
+        // set up the AlertDialog
+        AlertDialog alert = AlertDialog(
+          title: Text("ANIMIO"),
+          content: Text("El nuevo Usuario ha sido creado en el Sistema."),
+          actions: [
+            okButton,
+          ],
+        );
+
+        // show the dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      } catch (err) {
+        Get.snackbar(
+          "Registro de usuario",
+          err.toString(),
+          icon: const Icon(Icons.person, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    } else {
+      Get.snackbar(
+        "Registro de usuario",
+        errores.first,
+        icon: const Icon(Icons.person, color: Colors.yellow),
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 5),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    EmailCtrl.text = "@";
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -29,7 +107,6 @@ class _RegistroState extends State<Registro> {
                       child: Center(
                         child: Container(
                             width: 70,
-
                             /*decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(50.0)),*/
@@ -57,27 +134,16 @@ class _RegistroState extends State<Registro> {
                     SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      height: 35,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Nombre completo del Usuario',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
                     SizedBox(
                       height: 10,
                     ),
                     Container(
                       //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
                       padding: EdgeInsets.symmetric(horizontal: 15),
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      height: 35,
+                      width: MediaQuery.of(context).size.width * 0.70,
+                      height: 42,
                       child: TextField(
+                        controller: EmailCtrl,
                         decoration: InputDecoration(
                           labelText: 'Correo electrónico',
                           border: OutlineInputBorder(),
@@ -101,9 +167,10 @@ class _RegistroState extends State<Registro> {
                     Container(
                       //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
                       padding: EdgeInsets.symmetric(horizontal: 15),
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      height: 35,
+                      width: MediaQuery.of(context).size.width * 0.70,
+                      height: 42,
                       child: TextField(
+                        controller: ClaveCtrl,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(), labelText: 'Clave'),
                       ),
@@ -114,9 +181,10 @@ class _RegistroState extends State<Registro> {
                     Container(
                       //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
                       padding: EdgeInsets.symmetric(horizontal: 15),
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      height: 35,
+                      width: MediaQuery.of(context).size.width * 0.70,
+                      height: 42,
                       child: TextField(
+                        controller: RepClaveCtrl,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Confirmar Clave'),
@@ -138,7 +206,7 @@ class _RegistroState extends State<Registro> {
                                   borderRadius: BorderRadius.circular(15)),
                               child: TextButton(
                                 onPressed: () {
-                                  showAlertDialog(context);
+                                  guardarUsuario(context);
                                 },
                                 child: Text(
                                   'Grabar',
@@ -184,31 +252,4 @@ class _RegistroState extends State<Registro> {
       ),
     );
   }
-}
-
-showAlertDialog(BuildContext context) {
-  // set up the button
-  Widget okButton = TextButton(
-    child: Text("OK"),
-    onPressed: () {
-      Navigator.pop(context);
-    },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text("ANIMIO"),
-    content: Text("El nuevo Usuario ha sido creado en el Sistema."),
-    actions: [
-      okButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
 }

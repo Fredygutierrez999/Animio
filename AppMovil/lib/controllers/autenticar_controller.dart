@@ -6,9 +6,7 @@ class AutenticarController extends GetxController {
   // Metodo encargado de crear una sesion de usuario en la aplicacion
   Future<void> login(theEmail, thePassword) async {
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: theEmail, password: thePassword);
-      // ignore: void_checks
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: theEmail, password: thePassword);
       return Future.value(true);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
