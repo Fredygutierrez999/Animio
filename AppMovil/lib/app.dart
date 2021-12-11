@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:animio/controllers/autenticar_controller.dart';
-//import 'package:flutter_agenda/domain/controllers/persona_controller.dart';
+import 'package:animio/controllers/publicacion_controller.dart';
+import 'controllers/comentarios_controller.dart';
 import 'pages/PrincipalPage.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
@@ -32,7 +33,8 @@ class App extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done ||
               snapshot.connectionState == ConnectionState.waiting) {
             Get.put(AutenticarController());
-            //Get.put(PersonaController());
+            Get.put(PublicacionesController());
+            Get.put(ComentariosController());
             return const PrincipalPage();
           }
           return const Loading();
