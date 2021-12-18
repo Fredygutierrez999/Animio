@@ -1,16 +1,14 @@
 import 'package:animio/controllers/autenticar_controller.dart';
-import 'package:animio/controllers/publicacion_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:animio/model/comentario.dart';
 import 'package:animio/model/publicacion.dart';
 import 'package:animio/controllers/comentarios_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
 class FeedPage extends StatefulWidget {
-  publicacion item = new publicacion("", "", "", Timestamp.now(), 0);
+  late publicacion item;
   FeedPage({required publicacion itemPublicacion}) {
     item = itemPublicacion;
   }
@@ -25,7 +23,7 @@ class _FeedPageState extends State<FeedPage> {
 
   TextEditingController controladorComentario = TextEditingController();
   int _counter = 0;
-  publicacion itemPublicacion = new publicacion("", "", "", Timestamp.now(), 0);
+  late publicacion itemPublicacion;
 
 // Widget que se encarga de mostrar los mensajes
   Widget _item(comentario item, int posicion, String uid) {
@@ -59,7 +57,7 @@ class _FeedPageState extends State<FeedPage> {
   }
 
   marcarMeGusta(comentario item) {
-    item.meGusta = item.meGusta == true;
+    item.meGusta = !item.meGusta;
     comentarioController.actualizar(item);
     _Refresh();
   }
@@ -261,9 +259,8 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     _scrollController = ScrollController();
-    comentarioController.iniciar();
+    comentarioController.iniciar(this.itemPublicacion.reference.id);
     controladorComentario.addListener(() {});
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -480,7 +477,6 @@ class _FeedPageState extends State<FeedPage> {
                                 borderRadius: BorderRadius.circular(15)),
                             child: TextButton(
                               onPressed: () {
-
                                 var item = new comentario(
                                     "",
                                     itemPublicacion.reference.id,
@@ -490,7 +486,6 @@ class _FeedPageState extends State<FeedPage> {
                                     authenticationController.mail());
                                 comentarioController.agregar(item);
                                 controladorComentario.text = "";
-                                
                               },
                               child: Text(
                                 '+',

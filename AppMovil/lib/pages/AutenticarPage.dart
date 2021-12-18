@@ -34,8 +34,8 @@ class _AutenticarPageState extends State<AutenticarPage> {
 
   @override
   Widget build(BuildContext context) {
-    EmailCtrl.text = "a@b.com";
-    ClaveCtrl.text = "111111";
+    //EmailCtrl.text = "a@b.com";
+    //ClaveCtrl.text = "111111";
 
     return Scaffold(
       backgroundColor: Colors.white,

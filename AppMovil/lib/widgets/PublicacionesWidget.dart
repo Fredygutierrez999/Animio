@@ -1,3 +1,8 @@
+import 'dart:async';
+
+import 'package:animio/controllers/LocationManager.dart';
+import 'package:animio/controllers/PermissionsController.dart';
+import 'package:animio/controllers/location_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:animio/model/publicacion.dart';
@@ -24,6 +29,9 @@ class _PublicacionesWidget extends State<PublicacionesWidget> {
   AutenticarController authenticationController = Get.find();
   List<publicacion> publicaciones = [];
   TextEditingController controladorComentario = TextEditingController();
+  late PermissionsController permissionsController;
+  late LocationController locationController;
+  late LocationManager manager;
 
   // Se altera el ciclo vida del Widget para el inicio
   @override
@@ -31,6 +39,21 @@ class _PublicacionesWidget extends State<PublicacionesWidget> {
     super.initState();
     _scrollController = ScrollController();
     Controller.iniciar();
+
+    permissionsController = Get.find();
+    locationController = Get.find();
+    manager = LocationManager();
+
+    Timer.periodic(const Duration(seconds: 30), (timer) async {
+      // Verifica que tienes los permisos y luego obten la ubicacion
+      // Almacenala y tambien muestra un snackbar con los datos
+      locationController.location.value = null;
+      if (permissionsController.locationGranted) {
+        final position = await manager.getCurrentLocation();
+        locationController.location.value = position;
+        Get.snackbar('Tu ubicación','Latitud ${position.latitude}\nLongitud: ${position.longitude}\nAltitud: ${position.altitude}');
+      }
+    });
   }
 
   // Se altera el ciclo vida del Widget para la destruccion
@@ -225,10 +248,11 @@ class _PublicacionesWidget extends State<PublicacionesWidget> {
                     color: Colors.red.shade900,
                     borderRadius: BorderRadius.circular(5)),
                 child: TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     String uid = authenticationController.mail();
-                    Controller.agregar(new publicacion(uid,
-                        controladorComentario.text, "img", Timestamp.now(), 0));
+                    final position = await manager.getCurrentLocation();
+                    locationController.location.value = position;
+                    Controller.agregar(new publicacion(uid,controladorComentario.text, "img", Timestamp.now(), 0,position.latitude,position.longitude,position.altitude));
                     controladorComentario.text = "";
                   },
                   child: Text(

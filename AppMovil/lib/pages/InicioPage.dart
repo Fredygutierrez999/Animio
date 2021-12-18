@@ -1,7 +1,6 @@
 
-
+import 'package:animio/widgets/MapaWidget.dart';
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:animio/Feed_page.dart';
 import 'package:animio/adoptame.dart';
 import 'package:animio/chat_page.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +20,12 @@ class InicioPage extends StatefulWidget {
 class _InicioPageState extends State<InicioPage> {
   AutenticarController authCtrl = AutenticarController();
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  int _Ventana = 0;
   int _counter = 0;
 
-static final List<Widget> _widgets = <Widget>[
+  static final List<Widget> _widgets = <Widget>[
     const PublicacionesWidget(),
+    const MapaWidget()
     //const CrearWidget()
   ];
 
@@ -48,10 +49,6 @@ static final List<Widget> _widgets = <Widget>[
     });
   }
 
-  
-
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,8 +69,9 @@ static final List<Widget> _widgets = <Widget>[
               ],
             ),
             itemBuilder: (context) => [
-              PopupMenuItem<int>(value: 1, child: Text('Adoptar una Mascota')),
-              PopupMenuItem<int>(value: 2, child: Text('Maps - Localización')),
+              PopupMenuItem<int>(value: 0, child: Text('Publicaciones')),
+              PopupMenuItem<int>(value: 1, child: Text('Maps - Localización')),
+              PopupMenuItem<int>(value: 2, child: Text('Adoptar una Mascota')),
               PopupMenuItem<int>(value: 3, child: Text('Chatea con Nosotros')),
               PopupMenuItem<int>(value: 4, child: Text('Salir')),
             ],
@@ -91,10 +89,7 @@ static final List<Widget> _widgets = <Widget>[
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  children: [
-                    
-                    PublicacionesWidget()
-                  ],
+                  children: [_widgets.elementAt(_Ventana)],
                 ),
               ],
             ),
@@ -105,18 +100,13 @@ static final List<Widget> _widgets = <Widget>[
   }
 
   void showMenuSelection(int value) {
-    switch (value) {
-      case 1:
-        Navigator.push(context, MaterialPageRoute(builder: (_) => Adoptame()));
-        break;
-      case 3:
-        Navigator.push(context, MaterialPageRoute(builder: (_) => Chatpage()));
-        break;
-      case 4:
-        _logout();
-        break;
-      // Other cases for other menu options
+    if (value == 4) {
+      _Ventana = 0;
+      _logout();
+    } else {
+      _Ventana = value;
     }
+    _Refresh();
   }
 }
 

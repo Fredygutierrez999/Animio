@@ -2,17 +2,55 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:animio/controllers/autenticar_controller.dart';
 import 'package:animio/controllers/publicacion_controller.dart';
+import 'controllers/PermissionManager.dart';
+import 'controllers/PermissionsController.dart';
+import 'controllers/ThemeController.dart';
+import 'controllers/ThemeManager.dart';
 import 'controllers/comentarios_controller.dart';
+import 'controllers/location_controller.dart';
 import 'pages/PrincipalPage.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
+
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   // Se inicializa el contexto de firebase
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+// Dependency injection: setting up state management
+  late final ThemeController controller = Get.put(ThemeController());
+  // Theme management
+  late final ThemeManager manager = ThemeManager();
+  bool isLoaded = false;
 
-  // Constructor
-  App({Key? key}) : super(key: key);
+  Future<void> initializeTheme() async {
+    controller.darkMode = await manager.storedTheme;
+    //setState(() => isLoaded = true);
+  }
+
+  @override
+  void initState() {
+    Get.put(AutenticarController());
+    Get.put(PublicacionesController());
+    Get.put(ComentariosController());
+    //Get.put(PermissionsController());
+    Get.put(LocationController());
+
+    ever(controller.reactiveDarkMode, (bool isDarkMode) {
+      manager.changeTheme(isDarkMode: isDarkMode);
+    });
+    PermissionsController permissionsController =
+        Get.put(PermissionsController());
+    permissionsController.permissionManager = PermissionManager();
+    Get.lazyPut(() => LocationController());
+    initializeTheme();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +70,6 @@ class App extends StatelessWidget {
           }
           if (snapshot.connectionState == ConnectionState.done ||
               snapshot.connectionState == ConnectionState.waiting) {
-            Get.put(AutenticarController());
-            Get.put(PublicacionesController());
-            Get.put(ComentariosController());
             return const PrincipalPage();
           }
           return const Loading();

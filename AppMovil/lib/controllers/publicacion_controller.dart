@@ -23,21 +23,17 @@ class PublicacionesController extends GetxController {
 
   // Metodo para iniciar los listener
   iniciar() {
-    logInfo('Inicio de subscripciones a Firestore');
     streamSubscription = _operaciones.listen((event) {
-      logInfo('Se obtuvo un nuevo registro de fireStore');
       _records.clear();
       for (var item in event.docs) {
         _records.add(publicacion.fromSnapshot(item));
       }
       _records.sort((a, b) => a.fecha.toDate().compareTo(b.fecha.toDate()));
-      logInfo('Se obtuvieron ${_records.length} registros');
     });
   }
 
   // Metodo para detener los listener
   detener() {
-    logInfo('Finalizacion de subscripciones a Firestore');
     streamSubscription.cancel();
   }
 
@@ -50,7 +46,6 @@ class PublicacionesController extends GetxController {
           .then((value) => logInfo('Persona creada!'))
           .catchError((error) => logError('Persona no creada: $error'));
     } catch (e) {
-      logError('Persona no creada: $e');
       return Future.error(e);
     }
   }

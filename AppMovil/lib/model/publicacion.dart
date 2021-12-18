@@ -6,6 +6,9 @@ class publicacion {
   String img;
   List<comentario> comentarios = [];
   int meGusta;
+  double latitude;
+  double longitude;
+  double altitude;
 
   // Auditoria
   late String ID;
@@ -15,7 +18,7 @@ class publicacion {
   late DocumentReference reference;
 
   // Constructor
-  publicacion(this.usuario, this.informacion, this.img, this.fecha, this.meGusta);
+  publicacion(this.usuario, this.informacion, this.img, this.fecha, this.meGusta, this.latitude, this.longitude, this.altitude);
 
 // Metodo que se encarga de convertir un mapa en un objeto de registros [Obligatorio]
   publicacion.fromMap(Map<String, dynamic> map, {required this.reference})
@@ -24,11 +27,17 @@ class publicacion {
         assert(map['img'] != null),
         assert(map['fecha'] != null),
         assert(map['meGusta'] != null),
+        assert(map['latitude'] != null),
+        assert(map['longitude'] != null),
+        assert(map['altitude'] != null),
         usuario = map['usuario'],
         informacion = map['informacion'],
         img = map['img'],
         fecha = map['fecha'],
-        meGusta = map['meGusta'];
+        meGusta = map['meGusta'],
+        latitude = map['latitude'],
+        longitude = map['longitude'],
+        altitude = map['altitude'];
 
 // Metodo que se encarga de convertir un Documento de la base de datos
   // a un mapa de flutter [Obligatorio]
@@ -44,6 +53,9 @@ class publicacion {
       'img': img,
       'fecha': Timestamp.now(),
       'meGusta': meGusta,
+      'latitude': latitude,
+      'longitude': longitude,
+      'altitude': altitude,
     };
   }
 
