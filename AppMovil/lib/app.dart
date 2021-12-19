@@ -52,11 +52,13 @@ class _AppState extends State<App> {
     super.initState();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Firebase Demo - MisionTIC',
+      title: 'MisionTIC',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

@@ -70,7 +70,6 @@ class _InicioPageState extends State<InicioPage> {
             ),
             itemBuilder: (context) => [
               PopupMenuItem<int>(value: 0, child: Text('Publicaciones')),
-              PopupMenuItem<int>(value: 1, child: Text('Maps - Localización')),
               PopupMenuItem<int>(value: 2, child: Text('Adoptar una Mascota')),
               PopupMenuItem<int>(value: 3, child: Text('Chatea con Nosotros')),
               PopupMenuItem<int>(value: 4, child: Text('Salir')),

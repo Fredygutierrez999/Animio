@@ -6,6 +6,7 @@ import 'package:animio/model/publicacion.dart';
 import 'package:animio/controllers/comentarios_controller.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FeedPage extends StatefulWidget {
   late publicacion item;
@@ -419,6 +420,32 @@ class _FeedPageState extends State<FeedPage> {
                         SizedBox(
                           width: 10,
                         ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                            height: 35,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.red.shade900,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: TextButton(
+                              onPressed: () async {
+                                final url = "https://www.google.com/maps?q=${itemPublicacion.latitude},${itemPublicacion.longitude}";
+                                await launch(url);
+                              },
+                              child: Text(
+                                'Ver mapa',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     SizedBox(
